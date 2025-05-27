@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 .titulo-personalizado {
-  font-size: 1.875rem; 
-  color: #0f39f3; 
+  font-size: 2rem; 
+  color: #8f610c; 
   font-weight: bold; 
 }

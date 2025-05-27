@@ -5,7 +5,7 @@ import ProductCard from "./components/ProductCard";
 
 function App() {
   const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true); // Estado para manejar carga
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -26,7 +26,7 @@ function App() {
     <div className="min-h-screen bg-green-50 p-6">
       {/* Título principal */}
       <h1 className="text-3xl text-gray-800 font-bold text-center mb-8">
-        Listado de Productos
+        PROYECTO DE VENTAS DE PRODUCTOS
       </h1>
 
       {/* Mensaje de carga (si loading es true) */}
