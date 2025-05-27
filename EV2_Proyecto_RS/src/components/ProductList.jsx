@@ -1,6 +1,6 @@
 import React from "react";
 
-const ProductCard = ({ product }) => {
+const ProductList = ({ product }) => {
 return (
     <div className="border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-white">
     
@@ -8,7 +8,7 @@ return (
         <img
         src={product.thumbnail}
         alt={product.title}
-        className="object-contain max-h-32 w-[30%] "
+        className="object-cover h-full w-full"
         />
     </div>
 
@@ -17,17 +17,17 @@ return (
         {product.title}
         </h3>
                 <div className="mt-3 flex justify-between items-center">
-        <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded">
+        <span className="text-xs bg-amber-200 text-amber-800 px-2 py-1 rounded">
             {product.category}
         </span>
         </div>
-        <p className="text-green-600 font-semibold mt-2">${product.price}</p>
+        <p className="text-green-800 font-bold mt-2">${product.price}</p>
         <p className="text-gray-500 text-sm mt-1 line-clamp-2">
         {product.description}
         </p>
 
-        <div className="flex items-center flex-wrap pt-8">
-  <a className="text-indigo-500 inline-flex items-center md:mb-2 lg:mb-0" href="#">
+        <div className="flex items-center flex-wrap pt-8 bg-">
+  <a className="text-white inline-flex items-center md:mb-2 lg:mb-0 bg-pink-800 p-1 pl-2 pr-2 rounded text-sm" href="#">
    Ver Más
     <svg className="w-4 h-4 ml-2" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round">
       <path d="M5 12h14" />
@@ -53,4 +53,4 @@ return (
 );
 };
 
-export default ProductCard;
+export default ProductList;
