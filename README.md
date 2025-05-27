@@ -17,7 +17,7 @@ Este proyecto es una aplicación WEB  desarrollada con React que consume la API 
 - Búsqueda de productos por nombre (Filtracion de datos dentro de la Evidencia N°2).
 - Estilos responsivos y modernos con Tailwind CSS.
 
-### Evidencia 2 (EV1_Proyecto_RS)
+### Evidencia 2 (EV2_Proyecto_RS)
 
 #### Agregados
 
