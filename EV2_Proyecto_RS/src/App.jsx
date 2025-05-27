@@ -48,65 +48,66 @@ function App() {
         <div className="flex justify-center items-center h-64">
           <p className="text-blue-500 animate-pulse">Cargando productos...</p>
         </div>
-      ) : (
-        <div className="flex flex-col md:flex-row h-screen w-full">
-          <div className="w-full md:w-2/3 bg-gray-100 p-4 overflow-y-auto">
+) : (
+  <>
+    <h2 className="text-2xl text-gray-500 font-semibold mb-4 text-center">
+      Listado de Productos disponibles:
+    </h2>
+    <div>
+      <input
+        className="bg-orange-100 rounded p-1 mr-2 w-65"
+        type="text"
+        placeholder="Busqueda de producto"
+        value={search}
+        onChange={(e) => {
+          setSearch(e.target.value);
+        }}
+      />
+    </div>
+    <div className="flex flex-col md:flex-row h-screen w-full">
+      {/* Product List Section */}
+      <div className="w-full md:w-2/3 bg-gray-100 p-4 overflow-y-auto">
         <div className="mt-6">
-          <h2 className="text-2xl text-pink-500 font-semibold mb-4 text-left">
-            Listado de Productos disponibles:
-        <input
-                className="bg-orange-100 rounded p-1 mr-2 w-65"
-                type="text"
-                placeholder="Busqueda de producto"
-                value={search}
-                onChange={(e) => {
-                    setSearch(e.target.value);
-                }}
-            />
-            <button className="bg-pink-700 rounded p-1 pl-3 pr-3
-             m-0 text-white" onClick={() => setShow(!show)}>{show ? "Ocultar" : "Mostrar"}</button>
-          </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
               <ProductList key={product.id} product={product} />
             ))}
           </div>
-          </div>
         </div>
-          <div className="w-full md:w-1/3 bg-white p-4 ">
+      </div>
+      {/* Stats Panel Section */}
+      <div className="w-full md:w-1/3 bg-white p-4 ">
         <h2 className="text-xl font-bold mb-4">Estadísticas</h2>
         <div className="pt-1">
-          <input
-                className="bg-orange-100 rounded p-1 mr-2 w-65"
-                type="text"
-                placeholder="Busqueda de producto"
-                value={search}
-                onChange={(e) => {
-                    setSearch(e.target.value);
-                }}
-            />
-            <button className="bg-pink-700 rounded p-1 pl-3 pr-3
-             m-0 text-white" onClick={() => setShow(!show)}>{show ? "Ocultar" : "Mostrar"}</button>
-             {/* Renderización condicional */}
-            {show && (  <StatsPanel
-            total={totalProducts}
-            totalPrice={totalPrice}
-            max={maxProductObj.price}
-            maxName={maxProductObj.title}
-            min={minProductObj.price}
-            minName={minProductObj.title}
-            mayor20={mayor20}
-            promedioDescuento={promedioDescuento}
-            maxRatingTitle={maxRatingObj.title}
-            maxRatingValue={maxRatingObj.rating}
-            /> )}
-            
+          {/* Renderización condicional */}
+      <button
+        className="bg-red-700 rounded p-1 pl-3 pr-3 m-0 text-white"
+        onClick={() => setShow(!show)}
+      >
+        {show ? "Ocultar" : "Mostrar"}
+      </button>
 
-            {filteredProducts.length == 0 && <div>No se encontraron productos</div>}
-      </div>  
-</div>
+          {show && (
+            <StatsPanel
+              total={totalProducts}
+              totalPrice={totalPrice}
+              max={maxProductObj.price}
+              maxName={maxProductObj.title}
+              min={minProductObj.price}
+              minName={minProductObj.title}
+              mayor20={mayor20}
+              promedioDescuento={promedioDescuento}
+              maxRatingTitle={maxRatingObj.title}
+              maxRatingValue={maxRatingObj.rating}
+            />
+          )}
+
+          {filteredProducts.length == 0 && <div>No se encontraron productos</div>}
         </div>
-      )}
+      </div>
+    </div>
+  </>
+)}
        
       {/* Texto adicional */}
       
