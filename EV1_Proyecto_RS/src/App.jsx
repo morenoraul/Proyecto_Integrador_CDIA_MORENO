@@ -5,6 +5,7 @@ import ProductCard from "./components/ProductCard";
 
 function App() {
   const [products, setProducts] = useState([]);
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
@@ -21,6 +22,10 @@ function App() {
 
     fetchProducts();
   }, []); 
+  
+   const filteredProducts = products.filter((p) =>
+        p.title.toLowerCase().includes(search.toLowerCase())
+    );
 
   return (
     <div className="min-h-screen bg-orange-50 p-6">
