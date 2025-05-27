@@ -2,7 +2,7 @@ import React from "react";
 
 const ProductCard = ({ product }) => {
 return (
-  <div className="border border-gray-200 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-blue-50">
+  <div className="border border-blue-300 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-blue-50">
   
   <div className="h-48 bg-blue-100 flex items-center justify-center">
     <img
@@ -21,7 +21,7 @@ return (
         {product.category}
       </span>
     </div>
-    <p className="text-green-700 font-semibold mt-2">${product.price}</p>
+    <p className="text-red-700 font-semibold mt-2">${product.price}</p>
     <p className="text-blue-700 text-sm mt-1 line-clamp-2">
     {product.description}
     </p>
