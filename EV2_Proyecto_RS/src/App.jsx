@@ -37,23 +37,34 @@ function App() {
   const maxRatingObj = filteredProducts.reduce((max, p) => (p.rating > max.rating ? p : max), filteredProducts[0]);
 
   return (
-    <div className="min-h-screen bg-green-50 p-6">
+    <div className="min-h-screen bg-blue-50 p-6">
       {/* Título principal */}
-      <h1 className="text-3xl text-gray-800 font-bold text-center mb-8">
-        Listado de Productos
+      <h1 className="text-3xl text-blue-800 font-bold text-center mb-10">
+        Proyecto de Ventas de Productos
       </h1>
 
       {/* Mensaje de carga (si loading es true) */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <p className="text-gray-500 animate-pulse">Cargando productos...</p>
+          <p className="text-blue-500 animate-pulse">Cargando productos...</p>
         </div>
       ) : (
         <div className="flex flex-col md:flex-row h-screen w-full">
           <div className="w-full md:w-2/3 bg-gray-100 p-4 overflow-y-auto">
         <div className="mt-6">
           <h2 className="text-2xl text-pink-500 font-semibold mb-4 text-left">
-            Productos disponibles:
+            Listado de Productos disponibles:
+        <input
+                className="bg-orange-100 rounded p-1 mr-2 w-65"
+                type="text"
+                placeholder="Busqueda de producto"
+                value={search}
+                onChange={(e) => {
+                    setSearch(e.target.value);
+                }}
+            />
+            <button className="bg-pink-700 rounded p-1 pl-3 pr-3
+             m-0 text-white" onClick={() => setShow(!show)}>{show ? "Ocultar" : "Mostrar"}</button>
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {filteredProducts.map((product) => (
@@ -63,10 +74,10 @@ function App() {
           </div>
         </div>
           <div className="w-full md:w-1/3 bg-white p-4 ">
-        <h2 className="text-xl font-bold mb-4">Panel de Estadísticas</h2>
+        <h2 className="text-xl font-bold mb-4">Estadísticas</h2>
         <div className="pt-1">
-        <input
-                className="bg-gray-100 rounded p-1 mr-2 w-65"
+          <input
+                className="bg-orange-100 rounded p-1 mr-2 w-65"
                 type="text"
                 placeholder="Busqueda de producto"
                 value={search}
@@ -74,7 +85,6 @@ function App() {
                     setSearch(e.target.value);
                 }}
             />
-           
             <button className="bg-pink-700 rounded p-1 pl-3 pr-3
              m-0 text-white" onClick={() => setShow(!show)}>{show ? "Ocultar" : "Mostrar"}</button>
              {/* Renderización condicional */}
@@ -100,7 +110,7 @@ function App() {
        
       {/* Texto adicional */}
       
-      <p className="text-center text-gray-400 mt-10 text-sm">
+      <p className="text-center text-blue-400 mt-10 text-sm">
         Proyecto RS-MORENO TSDCIA 
       </p>
     </div>
