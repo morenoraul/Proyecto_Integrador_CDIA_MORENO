@@ -23,9 +23,9 @@ function App() {
   }, []); 
 
   return (
-    <div className="min-h-screen bg-green-50 p-6">
+    <div className="min-h-screen bg-orange-50 p-6">
       {/* Título principal */}
-      <h1 className="text-3xl text-gray-800 font-bold text-center mb-8">
+      <h1 className="text-3xl text-blue-800 font-seminbold text-center mb-8">
         PROYECTO DE VENTAS DE PRODUCTOS
       </h1>
 
