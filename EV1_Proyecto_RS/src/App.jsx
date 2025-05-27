@@ -32,11 +32,11 @@ function App() {
       {/* Mensaje de carga (si loading es true) */}
       {loading ? (
         <div className="flex justify-center items-center h-64">
-          <p className="text-gray-500 animate-pulse">Cargando productos...</p>
+          <p className="text-green-700 animate-pulse">Cargando productos...</p>
         </div>
       ) : (
         <div className="mt-6">
-          <h2 className="text-2xl text-blue-500 font-semibold mb-4 text-left">
+          <h2 className="text-2xl text-green-700 font-semibold mb-4 text-left">
             Listado de Productos disponibles:
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
