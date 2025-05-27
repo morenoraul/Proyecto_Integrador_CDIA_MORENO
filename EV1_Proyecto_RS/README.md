@@ -39,7 +39,8 @@ Este proyecto es una aplicación WEB  desarrollada con React que consume la API 
 └  Done. Now run:
 
 3. Dirigite al proyecto creado anteriormente
-    ```cd EV1-proyecto-rs
+    ```bash
+    cd EV1-proyecto-rs
     ```
 4. Instala las dependencias:
    ```bash
@@ -53,12 +54,14 @@ Este proyecto es una aplicación WEB  desarrollada con React que consume la API 
 
 6. Instala tailwind
 
-    ``` npm install tailwindcss @tailwindcss/vite
+    ```bash
+    npm install tailwindcss @tailwindcss/vite
     ```
 
 7. Instala axios
 
-    ```npm install axios
+    ```bash
+    npm install axios
     ```
 
 8. Abre tu navegador en [http://localhost:5173](http://localhost:5173)
