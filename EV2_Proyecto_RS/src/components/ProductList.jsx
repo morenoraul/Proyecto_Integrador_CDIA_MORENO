@@ -8,7 +8,7 @@ return (
         <img
         src={product.thumbnail}
         alt={product.title}
-        className="object-cover h-full w-full"
+        className="object-cover h-48 w-30%"
         />
     </div>
 

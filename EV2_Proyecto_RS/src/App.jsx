@@ -29,13 +29,12 @@ function App() {
     const totalProducts = filteredProducts.length;
     const maxProductObj = filteredProducts.reduce((max, p) => (p.price > max.price ? p : max), filteredProducts[0]);
     const minProductObj = filteredProducts.reduce((min, p) => (p.price < min.price ? p : min), filteredProducts[0]);
-// Ahora puedes acceder a minProductObj.price y minProductObj.title
-const mayor20 = filteredProducts.filter((p) => p.title.length > 20).length;
-const totalPrice = filteredProducts.reduce((sum, p) => sum + p.price, 0).toFixed(2);
-const promedioDescuento = filteredProducts.length > 0
+    const mayor20 = filteredProducts.filter((p) => p.title.length > 20).length;
+    const totalPrice = filteredProducts.reduce((sum, p) => sum + p.price, 0).toFixed(2);
+    const promedioDescuento = filteredProducts.length > 0
   ? (filteredProducts.reduce((sum, p) => sum + p.discountPercentage, 0) / filteredProducts.length).toFixed(2)
   : 0;
-const maxRatingObj = filteredProducts.reduce((max, p) => (p.rating > max.rating ? p : max), filteredProducts[0]);
+  const maxRatingObj = filteredProducts.reduce((max, p) => (p.rating > max.rating ? p : max), filteredProducts[0]);
 
   return (
     <div className="min-h-screen bg-green-50 p-6">
