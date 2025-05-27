@@ -18,7 +18,7 @@ function App() {
       } catch (error) {
         console.error("Error al cargar productos:", error);
       } finally {
-        setLoading(false); // Quitamos el estado de carga (éxito o error)
+        setLoading(false); 
       }
     };
 
