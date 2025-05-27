@@ -1,35 +1,58 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import axios from "axios";
+import "./App.css";
+import ProductCard from "./components/ProductCard"; 
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true); // Estado para manejar carga
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("https://dummyjson.com/products");
+        setProducts(response.data.products);
+      } catch (error) {
+        console.error("Error al cargar productos:", error);
+      } finally {
+        setLoading(false); 
+      }
+    };
+
+    fetchProducts();
+  }, []); 
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
+    <div className="min-h-screen bg-green-50 p-6">
+      {/* Título principal */}
+      <h1 className="text-3xl text-gray-800 font-bold text-center mb-8">
+        Listado de Productos
+      </h1>
+
+      {/* Mensaje de carga (si loading es true) */}
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-500 animate-pulse">Cargando productos...</p>
+        </div>
+      ) : (
+        <div className="mt-6">
+          <h2 className="text-2xl text-blue-500 font-semibold mb-4 text-left">
+            Listado de Productos disponibles:
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Texto adicional */}
+      <p className="text-center text-gray-400 mt-10 text-sm">
+       Proyecto RS Moreno TSDCIA 
       </p>
-    </>
-  )
+    </div>
+  );
 }
 
-export default App
+export default App;
