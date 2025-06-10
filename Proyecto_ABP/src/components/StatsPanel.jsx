@@ -1,34 +1,24 @@
-function StatsPanel({
-    total,
-    maximo,
-    minimo,
-    mostExpensive,
-    cheapest,
-    longTitleCount,
-    totalPrice,
-    avgDiscount,
-}) {
+function StatsPanel(props) {
     return (
-        <div className="mt-6 p-4 bg-blue rounded shadow transition duration-300 ease-in-out hover:bg-blue-200">
-            <h2 className="text-xl font-bold mb-2">Estadísticas</h2>
-            <p>Productos totales: {total}</p>
-            <p>
-                Precio máximo: <span className="text-green-700">${maximo}</span>
-                {mostExpensive && <> ({mostExpensive.title})</>}
-            </p>
-            <p>
-                Precio mínimo: <span className="text-red-700">${minimo}</span>
-                {cheapest && <> ({cheapest.title})</>}
-            </p>
-            <p>
-                Productos con título &gt; 20 caracteres: <span className="font-semibold">{longTitleCount}</span>
-            </p>
-            <p>
-                Precio total: <span className="font-semibold">${totalPrice}</span>
-            </p>
-            <p>
-                Promedio de descuento: <span className="font-semibold">{avgDiscount}%</span>
-            </p>
+        <div className="pt-5 text-sm">
+            <p>Total de Productos: <span className="text-pink-800">{props.total}</span></p>
+            <p>Total de Productos con stock &gt; 50: <span className="text-pink-800">{props.totalStockMayor50}</span></p>
+            <p>Precio Promedio: <span className="text-pink-800">{props.promedioPrecio}</span></p>
+            <p>Precio Maximo: <span className="text-pink-800">${props.max}</span></p>
+            <p>Precio Mínimo: <span className="text-pink-800">${props.min}</span></p>
+            <p>Promedio de rating general (categoría filtrada): <span className="text-pink-800">{props.promedioRating}</span></p>
+            <p>Producto más caro:  <span className="text-pink-800">{props.maxName} (${props.max})</span></p>
+            <p>Producto más Barato:  <span className="text-pink-800">{props.minName} (${props.min})</span></p>
+            <p>Promedio de Descuento: <span className="text-pink-800">{props.promedioDescuento}%</span></p>
+            <p>Producto con mejor valoración: <span className="text-pink-800">{props.maxRatingTitle} {props.maxRatingValue}%</span></p>
+            <p>Cantidad de productos en la categoría: <span className="text-pink-800">{props.cantidadPorCategoria}</span></p>
+            <p>Cantidad de productos con stock &gt; 50: <span className="text-pink-800">{props.cantidadStockMayor50}</span></p>
+            <p>Cantidad de productos con rating &gt; 4.5: <span className="text-pink-800">{props.cantidadRatingMayor45}</span></p>
+            {props.promedioPrecioCategoriaFiltrada && props.promedioPrecioCategoriaFiltrada !== "-" && (
+
+            <p>Precio promedio de la categoría {" "}
+            <span className="text-pink-800">${props.promedioPrecioCategoriaFiltrada}</span></p>)}
+
         </div>
     );
 }
