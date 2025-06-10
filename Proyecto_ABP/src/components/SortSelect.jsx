@@ -1,7 +1,7 @@
-function SortSelect({ sortOption, setSortOption}) {
+function SortSelect({ sortOption, setSortOption }) {
   return (
     <select
-      className="bg-gray-100 rounded p-1"
+      className="bg-blue-100 text-blue-800 rounded p-1"
       value={sortOption}
       onChange={(e) => setSortOption(e.target.value)}
     >
