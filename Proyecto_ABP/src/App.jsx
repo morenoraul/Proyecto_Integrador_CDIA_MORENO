@@ -207,4 +207,80 @@ function App() {
   );
 }
 
+
+import { Bar, Pie } from 'react-chartjs-2';
+import { CSVLink } from 'react-csv';
+
+const Visualization = ({ products }) => {
+  const categories = [...new Set(products.map(product => product.category))];
+  const categoryCounts = categories.map(category => products.filter(product => product.category === category).length);
+  const stockCounts = categories.map(category => products.filter(product => product.category === category).reduce((acc, product) => acc + product.stock, 0));
+
+  const barData = {
+    labels: categories,
+    datasets: [
+      {
+        label: 'Cantidad de productos por categoría',
+        data: categoryCounts,
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const pieData = {
+    labels: categories,
+    datasets: [
+      {
+        label: 'Proporción de stock por categoría',
+        data: stockCounts,
+        backgroundColor: [
+          'rgba(255, 99, 132, 0.6)',
+          'rgba(54, 162, 235, 0.6)',
+          'rgba(255, 206, 86, 0.6)',
+          'rgba(75, 192, 192, 0.6)',
+          'rgba(153, 102, 255, 0.6)',
+          'rgba(255, 159, 64, 0.6)',
+        ],
+        borderColor: [
+          'rgba(255, 99, 132, 1)',
+          'rgba(54, 162, 235, 1)',
+          'rgba(255, 206, 86, 1)',
+          'rgba(75, 192, 192, 1)',
+          'rgba(153, 102, 255, 1)',
+          'rgba(255, 159, 64, 1)',
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  const csvData = products.map(product => ({
+    id: product.id,
+    title: product.title,
+    price: product.price,
+    category: product.category,
+    stock: product.stock,
+    rating: product.rating,
+  }));
+
+  return (
+    <div>
+      <h2>Visualización de Datos</h2>
+      <div>
+        <Bar data={barData} />
+      </div>
+      <div>
+        <Pie data={pieData} />
+      </div>
+      <CSVLink data={csvData} filename={"productos.csv"}>
+        Exportar productos filtrados a CSV
+      </CSVLink>
+    </div>
+  );
+};
+
+export { Visualization };
+
 export default App;
