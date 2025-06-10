@@ -1,30 +1,25 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
-import { Bar, Pie } from "react-chartjs-2";
-import { CSVLink } from "react-csv";
-import "chart.js/auto";
 import "./App.css";
-import ProductList from "./components/ProductList";
-import SearchBar from "./components/SearchBar";
-import SortSelect from "./components/SortSelect";
 import ProductList from "./components/ProductList";
 import StatsPanel from "./components/StatsPanel";
 import SearchBar from "./components/SearchBar";
 import SortSelect from "./components/SortSelect";
-import { useState, useEffect } from "react";
-import axios from "axios";
-import { CSVLink } from "react-csv";
-import { Bar, Pie } from "react-chartjs-2";
-import "chart.js/auto";     
 
 function App() {
   const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [show, setShow] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const containerRef = useRef(null);
+
+  const [selectedCategory, setSelectedCategory] = useState("all");
+  const [categories, setCategories] = useState([]);
   const [sortOption, setSortOption] = useState("");
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchProducts = async () => {
       try {
         const [productsRes, categoriesRes] = await Promise.all([
           axios.get("https://dummyjson.com/products?limit=100"),
@@ -34,15 +29,20 @@ function App() {
         setCategories(categoriesRes.data);
       } catch (error) {
         console.error("Error al cargar productos:", error);
+      } finally {
+        setLoading(false);
       }
     };
-    fetchData();
+    fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter((p) =>
-    p.title.toLowerCase().includes(search.toLowerCase())
+  let filteredProducts = products.filter(
+    (p) =>
+      p.title.toLowerCase().includes(search.toLowerCase()) &&
+      (selectedCategory === "all" || p.category === selectedCategory)
   );
 
+  // Ordenamiento sin reasignar const
   let sortedProducts = [...filteredProducts];
   if (sortOption === "price-asc") {
     sortedProducts.sort((a, b) => a.price - b.price);
@@ -54,82 +54,120 @@ function App() {
     sortedProducts.sort((a, b) => b.rating - a.rating);
   }
 
-  const barData = {
-    labels: categories,
-    datasets: [
-      {
-        label: "Cantidad de productos por categoría",
-        data: categories.map(
-          (cat) => products.filter((p) => p.category === cat).length
-        ),
-        backgroundColor: "rgba(75, 192, 192, 0.6)",
-      },
-    ],
-  };
-
-  const pieData = {
-    labels: categories,
-    datasets: [
-      {
-        label: "Proporción de stock por categoría",
-        data: categories.map((cat) =>
+  const totalProducts = sortedProducts.length;
+  const maxProductObj = sortedProducts.reduce((max, p) => (p.price > max.price ? p : max), sortedProducts[0]);
+  const minProductObj = sortedProducts.reduce((min, p) => (p.price < min.price ? p : min), sortedProducts[0]);
+  const mayor20 = sortedProducts.filter((p) => p.title.length > 20).length;
+  const totalPrice = sortedProducts.reduce((sum, p) => sum + p.price, 0).toFixed(2);
+  const promedioDescuento = sortedProducts.length > 0
+    ? (sortedProducts.reduce((sum, p) => sum + p.discountPercentage, 0) / sortedProducts.length).toFixed(2)
+    : 0;
+  const maxRatingObj = sortedProducts.reduce((max, p) => (p.rating > max.rating ? p : max), sortedProducts[0]);
+  const promedioPrecio = sortedProducts.length
+    ? (sortedProducts.reduce((sum, p) => sum + p.price, 0) / sortedProducts.length).toFixed(2)
+    : 0;
+  const cantidadPorCategoria = selectedCategory === "all"
+    ? sortedProducts.length
+    : sortedProducts.filter(p => p.category === selectedCategory).length;
+  const cantidadStockMayor50 = sortedProducts.filter(p => p.stock > 50).length;
+  const cantidadRatingMayor45 = sortedProducts.filter(p => p.rating > 4.5).length;
+  const promedioRating = sortedProducts.length
+    ? (sortedProducts.reduce((sum, p) => sum + p.rating, 0) / sortedProducts.length).toFixed(2)
+    : 0;
+  const promedioPrecioCategoriaFiltrada =
+    selectedCategory !== "all"
+      ? (
           products
-            .filter((p) => p.category === cat)
-            .reduce((sum, p) => sum + p.stock, 0)
-        ),
-        backgroundColor: [
-          "#FF6384",
-          "#36A2EB",
-          "#FFCE56",
-          "#4BC0C0",
-          "#9966FF",
-          "#FF9F40",
-        ],
-      },
-    ],
+            .filter((p) => p.category === selectedCategory)
+            .reduce((sum, p) => sum + p.price, 0) /
+          products.filter((p) => p.category === selectedCategory).length
+        ).toFixed(2)
+      : "-";
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+    containerRef.current.classList.toggle("dark-mode");
   };
 
   return (
-    <div className="min-h-screen bg-blue-50 p-6">
-      <h1 className="text-3xl text-blue-800 font-bold text-center mb-10">
-        Proyecto de Ventas de Productos
+    <div ref={containerRef} className="min-h-screen bg-green-50 p-6">
+      <h1 className="text-3xl text-gray-800 font-bold text-center mb-8">
+        Listado de Productos
       </h1>
 
-      <SearchBar value={search} onChange={(e) => setSearch(e.target.value)} />
-      <SortSelect value={sortOption} onChange={(e) => setSortOption(e.target.value)} />
+      <button className="button" onClick={toggleDarkMode}>
+        Ver modo {darkMode ? "Claro" : "Oscuro"}
+      </button>
 
-      <div className="my-6">
-        <h2 className="text-xl font-semibold mb-2">Visualización de Datos</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Bar data={barData} />
-          <Pie data={pieData} />
+      {loading ? (
+        <div className="flex justify-center items-center h-64">
+          <p className="text-gray-500 animate-pulse">Cargando productos...</p>
         </div>
-      </div>
+      ) : (
+        <div className="flex flex-col md:flex-row h-screen w-full">
+          <div className="w-full md:w-2/3 bg-gray-100 p-4 overflow-y-auto">
+            <h2 className="text-2xl text-pink-500 font-semibold mb-4 text-left">
+              Productos disponibles:
+            </h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+              {sortedProducts.map((product) => (
+                <ProductList key={product.id} product={product} />
+              ))}
+            </div>
+          </div>
 
-      <div className="my-4">
-        <CSVLink
-          data={sortedProducts}
-          filename={"productos_filtrados.csv"}
-          className="bg-green-600 text-white px-4 py-2 rounded"
-        >
-          Exportar productos filtrados a CSV
-        </CSVLink>
-      </div>
+          <div className="w-full md:w-1/3 bg-white p-4 overflow-auto">
+            <h2 className="text-xl font-bold mb-4">Panel de Estadísticas</h2>
+            <button
+              className="bg-pink-700 rounded p-1 pl-3 pr-3 m-0 text-white"
+              onClick={() => setShow(!show)}
+            >
+              {show ? "Ocultar" : "Mostrar"}
+            </button>
 
-      <ProductList products={sortedProducts} />
+            <SearchBar
+              search={search}
+              setSearch={setSearch}
+              categories={categories}
+              selectedCategory={selectedCategory}
+              setSelectedCategory={setSelectedCategory}
+            />
+            <SortSelect sortOption={sortOption} setSortOption={setSortOption} />
 
-      <p className="text-center text-blue-400 mt-10 text-sm">
-        Proyecto RS-MORENO TSDCIA
+            {show && (
+              <StatsPanel
+                filteredProducts={sortedProducts}
+                categories={categories}
+                products={products}
+                total={totalProducts}
+                totalPrice={totalPrice}
+                max={maxProductObj.price}
+                maxName={maxProductObj.title}
+                min={minProductObj.price}
+                minName={minProductObj.title}
+                mayor20={mayor20}
+                promedioDescuento={promedioDescuento}
+                maxRatingTitle={maxRatingObj.title}
+                maxRatingValue={maxRatingObj.rating}
+                promedioPrecio={promedioPrecio}
+                cantidadPorCategoria={cantidadPorCategoria}
+                cantidadStockMayor50={cantidadStockMayor50}
+                cantidadRatingMayor45={cantidadRatingMayor45}
+                promedioPrecioCategoriaFiltrada={promedioPrecioCategoriaFiltrada}
+                promedioRating={promedioRating}
+              />
+            )}
+
+            {sortedProducts.length === 0 && <div>No se encontraron productos</div>}
+          </div>
+        </div>
+      )}
+
+      <p className="text-center text-gray-400 mt-10 text-sm">
+        Tienda ISPC - 2025
       </p>
     </div>
   );
 }
 
 export default App;
-import React from "react";
-import React from "react";
-import React from "react";
-import React from "react";
-import React from "react";
-import React from "react";
-import React from "react"; 
