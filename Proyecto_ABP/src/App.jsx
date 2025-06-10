@@ -3,38 +3,114 @@ import axios from "axios";
 import "./App.css";
 import ProductList from "./components/ProductList"; 
 import StatsPanel from "./components/StatsPanel";
+import SearchBar from "./components/SearchBar";
+import SortSelect from "./components/SortSelect";
 
 function App() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true); 
-   const [search, setSearch] = useState("");
-   const [show, setShow] = useState(true);
+  const [search, setSearch] = useState("");
+  const [show, setShow] = useState(true);
+  const [darkMode, setDarkMode] = useState(false);
+  const containerRef = useRef(null);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [categories, setCategories] = useState([]);
+  const [sortOption, setSortOption] = useState('');
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get("https://dummyjson.com/products?limit=60");
-        setProducts(response.data.products);
+         const [productsRes, categoriesRes] = await Promise.all([
+          axios.get("https://dummyjson.com/products?limit=100"),
+          axios.get("https://dummyjson.com/products/category-list")
+        ]);
+        setProducts(productsRes.data.products);
+        setCategories(categoriesRes.data);
       } catch (error) {
         console.error("Error al cargar productos:", error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
+
     fetchProducts();
   }, []); 
-
-    const filteredProducts = products.filter((p) => p.title.toLowerCase().includes(search.toLowerCase()));
-    const totalProducts = filteredProducts.length;
-    const maxProductObj = filteredProducts.reduce((max, p) => (p.price > max.price ? p : max), filteredProducts[0]);
-    const minProductObj = filteredProducts.reduce((min, p) => (p.price < min.price ? p : min), filteredProducts[0]);
-    const mayor20 = filteredProducts.filter((p) => p.title.length > 20).length;
-    const totalPrice = filteredProducts.reduce((sum, p) => sum + p.price, 0).toFixed(2);
-    const promedioDescuento = filteredProducts.length > 0
-  ? (filteredProducts.reduce((sum, p) => sum + p.discountPercentage, 0) / filteredProducts.length).toFixed(2)
-  : 0;
+  
+  const filteredProducts = products.filter(
+    (p) =>
+      p.title.toLowerCase().includes(search.toLowerCase()) &&
+      (selectedCategory === "all" || p.category === selectedCategory)
+  );
+  const totalProducts = filteredProducts.length;
+  const maxProductObj = filteredProducts.reduce((max, p) => (p.price > max.price ? p : max), filteredProducts[0]);
+  const minProductObj = filteredProducts.reduce((min, p) => (p.price < min.price ? p : min), filteredProducts[0]);
+  const mayor20 = filteredProducts.filter((p) => p.title.length > 20).length;
+  const totalPrice = filteredProducts.reduce((sum, p) => sum + p.price, 0).toFixed(2);
+  const promedioDescuento = filteredProducts.length > 0
+    ? (filteredProducts.reduce((sum, p) => sum + p.discountPercentage, 0) / filteredProducts.length).toFixed(2)
+    : 0;
   const maxRatingObj = filteredProducts.reduce((max, p) => (p.rating > max.rating ? p : max), filteredProducts[0]);
+  const promedioPrecio = filteredProducts.length > 0
+    ? (filteredProducts.reduce((sum, p) => sum + p.price, 0) / filteredProducts.length).toFixed(2)
+    : 0;
+  const minRatingObj = filteredProducts.reduce((min, p) => (p.rating < min.rating ? p : min), filteredProducts[0]);
+  const minPriceObj = filteredProducts.reduce((min, p) => (p.price < min.price ? p : min), filteredProducts[0]);
+  const maxDiscountObj = filteredProducts.reduce((max, p) => (p.discountPercentage > max.discountPercentage ? p : max), filteredProducts[0]);
+  const minDiscountObj = filteredProducts.reduce((min, p) => (p.discountPercentage < min.discountPercentage ? p : min), filteredProducts[0]);
+  const cantidadPorCategoria = selectedCategory === "all"
+    ? filteredProducts.length
+    : filteredProducts.filter((p) => p.category === selectedCategory).length; 
+   const cantidadStockMayor50 = filteredProducts.filter(p => p.stock > 50).length;
+  const cantidadStockMenor10 = filteredProducts.filter(p => p.stock < 10).length;
+  const cantidadStockCero = filteredProducts.filter(p => p.stock === 0).length;
+  const cantidadStockMayor100 = filteredProducts.filter(p => p.stock > 100).length;
+  const cantidadRatingMayor45 = filteredProducts.filter(p => p.rating > 4.5).length;
+  const promedioRating = filteredProducts.length > 0
+    ? (filteredProducts.reduce((sum, p) => sum + p.rating, 0) / filteredProducts.length).toFixed(2)
+    : 0;
+  const promedioPrecioCategoriaFiltrada =
+  selectedCategory !== "all"
+    ? (
+        products
+          .filter((p) => p.category === selectedCategory)
+          .reduce((sum, p) => sum + p.price, 0) /
+        products.filter((p) => p.category === selectedCategory).length || 0
+      ).toFixed(2)
+    : "-";
+
+  const promedioRatingCategoriaFiltrada =
+  selectedCategory !== "all"
+    ? (
+        products
+          .filter((p) => p.category === selectedCategory)
+          .reduce((sum, p) => sum + p.rating, 0) /
+        products.filter((p) => p.category === selectedCategory).length || 0
+      ).toFixed(2)
+    : "-";
+  // const promedioDescuentoCategoriaFiltrada =
+
+    const toggleDarkMode = ()=>{
+      setDarkMode(!darkMode);
+          containerRef.current.classList.toggle("dark-mode");
+   
+    };
+  const filteredCategories = categories.filter((category) =>
+    category.toLowerCase().includes(search.toLowerCase())
+  );
+  const handleCategoryChange = (category) => {
+    setSelectedCategory(category);
+    setSearch(""); // Limpiar la búsqueda al cambiar de categoría
+  }
+    if (sortOption === "price-asc") {
+      filteredProducts = [...filteredProducts].sort((a, b) => a.price - b.price);
+    } else if (sortOption === "price-desc") {
+      filteredProducts = [...filteredProducts].sort((a, b) => b.price - a.price);
+    } else if (sortOption === "rating-asc") {
+      filteredProducts = [...filteredProducts].sort((a, b) => a.rating - b.rating);
+    } else if (sortOption === "rating-desc") {
+      filteredProducts = [...filteredProducts].sort((a, b) => b.rating - a.rating);
+    }
 
   return (
     <div className="min-h-screen bg-blue-50 p-6">
@@ -96,7 +172,18 @@ function App() {
               min={minProductObj.price}
               minName={minProductObj.title}
               mayor20={mayor20}
+              cantidadPorCategoria={cantidadPorCategoria}
+              cantidadStockMayor50={cantidadStockMayor50}
+              cantidadStockMenor10={cantidadStockMenor10}
+              cantidadStockCero={cantidadStockCero}
+              cantidadStockMayor100={cantidadStockMayor100}
+              cantidadRatingMayor45={cantidadRatingMayor45}
+              promedioRating={promedioRating}
               promedioDescuento={promedioDescuento}
+              promedioPrecio={promedioPrecio}
+              promedioPrecioCategoriaFiltrada={promedioPrecioCategoriaFiltrada}
+              promedioRatingCategoriaFiltrada={promedioRatingCategoriaFiltrada}
+              minRatingTitle={minRatingObj.title}
               maxRatingTitle={maxRatingObj.title}
               maxRatingValue={maxRatingObj.rating}
             />
